@@ -1,0 +1,56 @@
+user
+  - receive notifications on upcoming events
+  - can request an interest to join an event (organizer will decide to accept)
+  - get notifications if request is accepted or not
+  - get notifications for upcoming events
+
+organizer
+  - user at first, but can request an admin to become an organizer
+  - can invite users to join an event (user can accept or not)
+  - get notifications if request is accepted or not
+
+
+administrator
+  - manages granting a user to become an organizer
+  - manages user
+  - manages events
+
+[ EVENT ]
+  - can be any type
+  - party, biking, basketball games, 
+  - can be cancelled
+  - notifies participating users if an event is cancelled with details why it
+    was cancelled
+
+  - contains:
+      a) participants
+      b) upvotes
+      c) reviews
+
+
+
+[ DATABASE ]
+
+Event:
+  String: title
+  String: description
+  Date: eventDate
+  int: participantCount
+  int: upvoteCount
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 "use client";
 
 import { auth } from "@/auth/firebase";
+import Events from "@/components/Feed/Events";
 import PageLoad from "@/components/Loading/PageLoad";
 import Login from "@/components/Menu/Login";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -13,7 +14,7 @@ export default function Home() {
   if (user)
     return (
       <div>
-        <p>USER</p>
+        <Events />
       </div>
     );
   else return <Login />;
