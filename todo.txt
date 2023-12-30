@@ -29,6 +29,9 @@ administrator
 
 
 
+
+
+
 [ DATABASE ]
 
 Event:
@@ -38,6 +41,11 @@ Event:
   int: participantCount
   int: upvoteCount
   
+User:
+  userType: string = ['User', 'Organizer', 'Admin']
+  upvotes: array = [eventId, eventId, eventId]
+  eventsJoined: array = [eventId, eventId]
+
 
 
 
