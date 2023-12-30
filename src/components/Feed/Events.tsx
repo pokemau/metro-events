@@ -14,11 +14,26 @@ import { useEffect, useState } from "react";
 // ICONS
 import { BiUpvote } from "react-icons/bi";
 import Logout from "../Menu/Logout";
+import UpdateUserData from "@/utils/UpdateUserData";
+import { User } from "firebase/auth";
 
-const Events = () => {
+export interface UserDataType {
+  eventsJoined: string[];
+  pendingEventsToJoin: string[];
+  upVotes: string[];
+  userType: string;
+}
+
+interface EventsProps {
+  user: User;
+  userData: UserDataType | undefined;
+}
+
+const Events: React.FC<EventsProps> = ({ userData, user }) => {
   const [eventsList, setEventsList] = useState<DocumentData[]>([]);
   const [limitCount, setLimitCount] = useState(30);
 
+  // get feed on load
   useEffect(() => {
     const q = query(
       collection(db, "events"),
@@ -37,8 +52,8 @@ const Events = () => {
   return (
     <div>
       <Logout />
-      {eventsList.length != 0 ? (
-        <Event eventsList={eventsList} />
+      {eventsList.length != 0 && userData ? (
+        <Event eventsList={eventsList} userData={userData} user={user} />
       ) : (
         <p>LOADING</p>
       )}
@@ -48,9 +63,11 @@ const Events = () => {
 
 interface EventProps {
   eventsList: DocumentData[];
+  userData: UserDataType;
+  user: User;
 }
 
-const Event: React.FC<EventProps> = ({ eventsList }) => {
+const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
   const displayDate = (dateObj: Date): string => {
     const currDate = new Date();
     const sentDate = dateObj?.getDate();
@@ -64,8 +81,45 @@ const Event: React.FC<EventProps> = ({ eventsList }) => {
     return "on" + dateObj?.toLocaleDateString();
   };
 
-  const requestToJoin = (id: string) => {
-    console.log(id);
+  const displayToJoinEventMsg = (eventID: string): React.ReactElement => {
+    if (userData.eventsJoined.includes(eventID))
+      return (
+        <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+          <p>Joined Event</p>
+        </div>
+      );
+    else if (userData.pendingEventsToJoin.includes(eventID)) {
+      return (
+        <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+          <p>Pending</p>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        onClick={(ev) => requestToJoin(ev, eventID)}
+        className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+        Request To Join
+      </div>
+    );
+  };
+
+  const requestToJoin = (ev: React.MouseEvent<HTMLDivElement>, id: string) => {
+    UpdateUserData(user.uid, id);
+
+    console.log("click");
+
+    const targetDiv = ev.currentTarget;
+    if (targetDiv) {
+      const newDiv = document.createElement("div");
+      newDiv.innerHTML = `
+      <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+        <p>Pending</p>
+      </div>`;
+
+      targetDiv.replaceWith(newDiv);
+    }
   };
 
   const upvoteEvent = (id: string) => {
@@ -102,11 +156,7 @@ const Event: React.FC<EventProps> = ({ eventsList }) => {
               <p className="text-[1.1rem]">{ev.data().EventUpvoteCount}</p>
             </div>
 
-            <div
-              onClick={() => requestToJoin(ev.id)}
-              className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-              <button>Request to Join</button>
-            </div>
+            {displayToJoinEventMsg(ev.id)}
           </div>
         </div>
       ))}

@@ -1,7 +1,6 @@
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 
 import { auth, db } from "@/auth/firebase";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 
 const Login = () => {
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
