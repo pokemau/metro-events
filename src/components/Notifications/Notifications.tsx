@@ -1,12 +1,14 @@
 import { User } from "firebase/auth";
 import RequestToBeAnOrganizer from "./RequestToBeAnOrganizer";
 import Logout from "../Menu/Logout";
+import { UserDataType } from "@/utils/Intefaces";
 
 export interface NotificationsProps {
   user: User;
+  userData: UserDataType;
 }
 
-const Notifications: React.FC<NotificationsProps> = ({ user }) => {
+const Notifications: React.FC<NotificationsProps> = ({ user, userData }) => {
   return (
     <div className="w-full h-[100vh] p-2">
       <div className="bg-[#f5f5f5] w-full h-full rounded-md p-2 flex flex-col justify-between items-center">
@@ -15,7 +17,11 @@ const Notifications: React.FC<NotificationsProps> = ({ user }) => {
         </div>
 
         <div className="flex flex-col gap-1 text-center">
-          <RequestToBeAnOrganizer user={user} />
+          {userData?.userType == "user" ? (
+            <RequestToBeAnOrganizer user={user} />
+          ) : (
+            <></>
+          )}
           <Logout />
         </div>
       </div>

@@ -1,7 +1,10 @@
 import AddNewOrganizerRequest from "@/utils/Admin/AddNewOrganizerRequest";
-import { NotificationsProps } from "./Notifications";
+import { User } from "firebase/auth";
 
-const RequestToBeAnOrganizer: React.FC<NotificationsProps> = ({ user }) => {
+interface RequestToBeAnOrganizer {
+  user: User;
+}
+const RequestToBeAnOrganizer: React.FC<RequestToBeAnOrganizer> = ({ user }) => {
   const requestToBeAnOrganizer = () => {
     AddNewOrganizerRequest(user.uid);
   };
