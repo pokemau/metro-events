@@ -37,9 +37,15 @@ administrator
 Event:
   String: title
   String: description
+  String[]: [REVIEW]
   Date: eventDate
   int: participantCount
   int: upvoteCount
+
+Review:
+  String: userName
+  String: userRevie
+  Date: reviewPosted
   
 User:
   userType: string = ['User', 'Organizer', 'Admin']
