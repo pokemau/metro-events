@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore";
 export interface UserDataType {
   uid: string;
   eventsJoined: string[];
-  upVotes: string[];
+  UserUpvotedEvents: string[];
   userType: string;
 }
 

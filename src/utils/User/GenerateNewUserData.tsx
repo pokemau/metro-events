@@ -13,7 +13,7 @@ const GenerateNewUserData = async (user: User) => {
       const d: UserDataType = {
         uid: user.uid,
         userType: "user",
-        upVotes: [],
+        UserUpvotedEvents: [],
         eventsJoined: [],
       };
       await setDoc(docRef, d);

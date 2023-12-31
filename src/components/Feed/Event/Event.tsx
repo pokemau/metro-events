@@ -10,6 +10,8 @@ import { DocumentData, Timestamp } from "firebase/firestore";
 import { useRef } from "react";
 import { BiUpvote } from "react-icons/bi";
 import EventReview from "./EventReview";
+import IncrementUpvoteEventCount from "@/utils/Event/IncrementUpvoteEventCount";
+import AddNewUpvotedEvent from "@/utils/User/AddNewUpvotedEvent";
 
 interface EventProps {
   eventsList: DocumentData[];
@@ -69,8 +71,12 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
     if (textAreaRef.current) textAreaRef.current.value = "";
   };
 
-  const upvoteEvent = (id: string) => {
-    console.log(id);
+  const upvoteEvent = (eventID: string) => {
+    if (!userData.UserUpvotedEvents.includes(eventID)) {
+      IncrementUpvoteEventCount(eventID);
+      userData.UserUpvotedEvents.push(eventID);
+    }
+    AddNewUpvotedEvent(eventID, user.uid);
   };
   return (
     <>

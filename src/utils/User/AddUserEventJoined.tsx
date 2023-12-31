@@ -11,6 +11,7 @@ const AddUserEventJoined = async (userID: string, eventID: string) => {
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data() as UserDataType;
 
+      //////////// FIX THIS SHIT
       if (!userData.eventsJoined.includes(eventID)) {
         await updateDoc(userDocRef, {
           eventsJoined: [...userData.eventsJoined, eventID],
