@@ -14,33 +14,16 @@ import { useEffect, useRef, useState } from "react";
 
 // ICONS
 import { BiUpvote } from "react-icons/bi";
-import Logout from "../Menu/Logout";
-import UpdateUserData from "@/utils/UpdateUserData";
 import { User } from "firebase/auth";
-import UpdateEventData from "@/utils/UpdateEventData";
-
-export interface UserDataType {
-  eventsJoined: string[];
-  pendingEventsToJoin: string[];
-  upVotes: string[];
-  userType: string;
-}
-
-export interface EventParamsType {
-  EventDate: Timestamp;
-  EventDescription: string;
-  EventOrganizer: string;
-  EventParticipantCount: number;
-  EventReviews: ReviewParamsType[];
-  EventTitle: string;
-  EventUpvoteCount: number;
-}
-
-export interface ReviewParamsType {
-  ReviewPoster: string;
-  ReviewContent: string;
-  ReviewDatePosted: Timestamp;
-}
+import AddUserEventJoined from "@/utils/User/AddUserEventJoined";
+import AddEventReview from "@/utils/Event/AddEventReview";
+import {
+  EventParamsType,
+  ReviewParamsType,
+  UserDataType,
+} from "@/utils/Intefaces";
+import Logout from "../Menu/Logout";
+import IncrementEventParticipantCount from "@/utils/Event/IncrementEventParticipantCount";
 
 interface EventsProps {
   user: User;
@@ -56,7 +39,7 @@ const Events: React.FC<EventsProps> = ({ userData, user }) => {
     const q = query(
       collection(db, "events"),
       orderBy("EventDate", "desc"),
-      limit(limitCount),
+      limit(limitCount)
     );
     const unsub = onSnapshot(q, (snapShot) => {
       setEventsList(snapShot.docs.map((doc) => doc));
@@ -69,7 +52,6 @@ const Events: React.FC<EventsProps> = ({ userData, user }) => {
 
   return (
     <div>
-      <Logout />
       {eventsList.length != 0 && userData ? (
         <Event eventsList={eventsList} userData={userData} user={user} />
       ) : (
@@ -102,16 +84,10 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
   };
 
   const displayToJoinEventMsg = (eventID: string): React.ReactElement => {
-    if (userData.eventsJoined.includes(eventID))
+    if (userData.eventsJoined.includes(eventID)) {
       return (
         <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
           <p>Joined Event</p>
-        </div>
-      );
-    else if (userData.pendingEventsToJoin.includes(eventID)) {
-      return (
-        <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-          <p>Pending</p>
         </div>
       );
     }
@@ -119,15 +95,14 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
     return (
       <div
         onClick={(ev) => requestToJoin(ev, eventID)}
-        className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all"
-      >
+        className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
         Request To Join
       </div>
     );
   };
 
   const requestToJoin = (ev: React.MouseEvent<HTMLDivElement>, id: string) => {
-    UpdateUserData(user.uid, id);
+    AddUserEventJoined(user.uid, id);
 
     console.log("click");
 
@@ -135,9 +110,10 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
     if (targetDiv) {
       const newDiv = document.createElement("div");
       newDiv.innerHTML = `
-      <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-        <p>Pending</p>
-      </div>`;
+        <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+          <p>Joined Event</p>
+        </div>
+      `;
 
       targetDiv.replaceWith(newDiv);
     }
@@ -152,7 +128,7 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
       ReviewContent: reviewContent?.toString()!,
       ReviewDatePosted: Timestamp.now(),
     };
-    UpdateEventData(eventID, newReview);
+    AddEventReview(eventID, newReview);
 
     if (textAreaRef.current) textAreaRef.current.value = "";
   };
@@ -167,10 +143,7 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
         if (!evData) return null;
 
         return (
-          <div
-            key={ev.id}
-            className="bg-[#f5f5f5] rounded-lg w-[70%] my-2 mx-auto p-4"
-          >
+          <div key={ev.id} className="bg-[#f5f5f5] rounded-lg w-[80%] my-2 p-4">
             <div className="flex items-center gap-2 border-gray-300 border-b-[1px] py-1 justify-center">
               <h1 className="font-bold text-3xl">{evData.EventTitle}</h1>
             </div>
@@ -186,8 +159,7 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
               <div className="flex items-center justify-center">
                 <div
                   onClick={() => upvoteEvent(ev.id)}
-                  className="text-[1.5rem] cursor-pointer hover:text-red-500"
-                >
+                  className="text-[1.5rem] cursor-pointer hover:text-red-500">
                   <BiUpvote />
                 </div>
                 <p className="text-[1.1rem]">{evData.EventUpvoteCount}</p>
@@ -201,19 +173,17 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
                 <textarea
                   ref={textAreaRef}
                   maxLength={400}
-                  className="w-full focus:outline-none p-2 text-lg"
-                ></textarea>
+                  className="w-full focus:outline-none p-2 text-lg"></textarea>
                 <button
                   onClick={() => addReviewToEvent(ev.id)}
-                  className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all"
-                >
+                  className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
                   Add Review
                 </button>
               </div>
 
               {evData.EventReviews.sort(
                 (a, b) =>
-                  b.ReviewDatePosted.toMillis() - a.ReviewDatePosted.toMillis(),
+                  b.ReviewDatePosted.toMillis() - a.ReviewDatePosted.toMillis()
               ).map((review: ReviewParamsType) => (
                 <>
                   <h1>{review.ReviewPoster}</h1>

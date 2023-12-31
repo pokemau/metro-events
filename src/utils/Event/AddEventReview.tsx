@@ -1,12 +1,8 @@
 import { db } from "@/auth/firebase";
-import { EventParamsType, ReviewParamsType } from "@/components/Feed/Events";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { EventParamsType, ReviewParamsType } from "../Intefaces";
 
-const UpdateEventData = async (eventID: string, newReview: ReviewParamsType) => {
+const AddEventReview = async (eventID: string, newReview: ReviewParamsType) => {
   try {
     const documentRef = doc(db, "events", eventID);
     const docSnap = await getDoc(documentRef);
@@ -24,4 +20,4 @@ const UpdateEventData = async (eventID: string, newReview: ReviewParamsType) => 
   }
 };
 
-export default UpdateEventData;
+export default AddEventReview;

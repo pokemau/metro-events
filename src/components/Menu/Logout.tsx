@@ -9,9 +9,11 @@ const Logout = () => {
   if (loading) return <h1>Logging Out</h1>;
 
   return (
-    <button className="menu-link" onClick={() => signOut()}>
-      Logout
-    </button>
+    <div
+      onClick={() => signOut()}
+      className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+      <button>Logout</button>
+    </div>
   );
 };
 

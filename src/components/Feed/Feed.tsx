@@ -1,7 +1,10 @@
 import { User } from "firebase/auth";
-import Events, { UserDataType } from "./Events";
 import { useEffect, useState } from "react";
-import GetUserData from "@/utils/GetUserdata";
+
+import Notifications from "../Notifications/Notifications";
+import GetUserData from "@/utils/User/GetUserdata";
+import { UserDataType } from "@/utils/Intefaces";
+import Events from "./Events";
 
 interface FeedProps {
   user: User;
@@ -24,8 +27,13 @@ const Feed: React.FC<FeedProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <div>
-      <Events user={user} userData={userData} />
+    <div className="flex">
+      <div className="w-[30%]">
+        <Notifications user={user} />
+      </div>
+      <div className="w-[70%]">
+        <Events user={user} userData={userData} />
+      </div>
     </div>
   );
 };

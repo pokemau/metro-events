@@ -52,6 +52,8 @@ User:
   upvotes: array = [eventId, eventId, eventId]
   eventsJoined: array = [eventId, eventId]
 
+Admin:
+  
 
 
 

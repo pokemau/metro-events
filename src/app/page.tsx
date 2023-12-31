@@ -1,10 +1,10 @@
 "use client";
 
 import { auth, db } from "@/auth/firebase";
-import Events from "@/components/Feed/Events";
 import Feed from "@/components/Feed/Feed";
 import PageLoad from "@/components/Loading/PageLoad";
 import Login from "@/components/Menu/Login";
+import { UserDataType } from "@/utils/Intefaces";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -18,13 +18,15 @@ export default function Home() {
 
       if (!userDocSnap.exists()) {
         const docRef = doc(db, "users_list", userId);
-        const d = {
-          userType: "user",
-          upVotes: [],
-          pendingEventsToJoin: [],
-          eventsJoined: [],
-        };
-        await setDoc(docRef, d);
+        if (user) {
+          const d: UserDataType = {
+            uid: user.uid,
+            userType: "user",
+            upVotes: [],
+            eventsJoined: [],
+          };
+          await setDoc(docRef, d);
+        }
       }
     } catch {
       console.log("ERRRRRRRRRRRRRRRRRR");
