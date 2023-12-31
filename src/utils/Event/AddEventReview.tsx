@@ -1,8 +1,11 @@
 import { db } from "@/auth/firebase";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { ReviewParamsType } from "../Intefaces";
+import { EventReviewParamsType } from "../Intefaces";
 
-const AddEventReview = async (eventID: string, newReview: ReviewParamsType) => {
+const AddEventReview = async (
+  eventID: string,
+  newReview: EventReviewParamsType
+) => {
   try {
     const eventRef = doc(db, "events", eventID);
 

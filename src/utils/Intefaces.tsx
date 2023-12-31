@@ -16,12 +16,12 @@ export interface EventParamsType {
   EventDescription: string;
   EventOrganizer: string;
   EventParticipantCount: number;
-  EventReviews: ReviewParamsType[];
+  EventReviews: EventReviewParamsType[];
   EventTitle: string;
   EventUpvoteCount: number;
 }
 
-export interface ReviewParamsType {
+export interface EventReviewParamsType {
   ReviewPoster: string;
   ReviewContent: string;
   ReviewDatePosted: Timestamp;
