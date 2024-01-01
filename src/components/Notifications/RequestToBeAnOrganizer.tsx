@@ -7,7 +7,6 @@ interface RequestToBeAnOrganizer {
 }
 const RequestToBeAnOrganizer: React.FC<RequestToBeAnOrganizer> = ({ user }) => {
   const divRef = useRef<HTMLDivElement>(null);
-
   const requestToBeAnOrganizer = () => {
     AddNewOrganizerRequest(user.uid, divRef);
   };
