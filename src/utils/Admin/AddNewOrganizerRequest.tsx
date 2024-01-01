@@ -2,7 +2,10 @@ import { db } from "@/auth/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { AdminDataType } from "../Intefaces";
 
-const AddNewOrganizerRequest = async (applicantUID: string) => {
+const AddNewOrganizerRequest = async (
+  applicantUID: string,
+  divRef: React.RefObject<HTMLDivElement>
+) => {
   const adminUID = "bMIAAxoHAQYB5W28RojSpac6iRJ2";
 
   try {
@@ -11,7 +14,9 @@ const AddNewOrganizerRequest = async (applicantUID: string) => {
     const adminReqs = docSnap.data() as AdminDataType;
 
     if (adminReqs.OrganizerRequests.includes(applicantUID)) {
-      console.log("ALREADY REQUESTED TO BE AN ORGANIZER");
+      if (divRef?.current?.innerText) {
+        divRef.current.innerText = "Already Requested!";
+      }
       return;
     }
 

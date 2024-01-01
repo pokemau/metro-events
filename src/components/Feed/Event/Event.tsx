@@ -9,6 +9,8 @@ import { User } from "firebase/auth";
 import { DocumentData, Timestamp } from "firebase/firestore";
 import { useRef } from "react";
 import { BiUpvote } from "react-icons/bi";
+import { BiSolidUpvote } from "react-icons/bi";
+
 import EventReview from "./EventReview";
 import IncrementUpvoteEventCount from "@/utils/Event/IncrementUpvoteEventCount";
 import AddNewUpvotedEvent from "@/utils/User/AddNewUpvotedEvent";
@@ -78,6 +80,29 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
     }
     AddNewUpvotedEvent(eventID, user.uid);
   };
+
+  const displayUpvote = (eventID: string, evData: EventParamsType) => {
+    if (userData.UserUpvotedEvents.includes(eventID)) {
+      return (
+        <div className="flex items-center justify-center">
+          <div className="text-[1.5rem] cursor-pointer hover:text-red-500 text-red-500">
+            <BiSolidUpvote />
+          </div>
+          <p className="text-[1.1rem]">{evData.EventUpvoteCount}</p>
+        </div>
+      );
+    }
+    return (
+      <div className="flex items-center justify-center">
+        <div
+          onClick={() => upvoteEvent(eventID)}
+          className="text-[1.5rem] cursor-pointer hover:text-red-500">
+          <BiUpvote />
+        </div>
+        <p className="text-[1.1rem]">{evData.EventUpvoteCount}</p>
+      </div>
+    );
+  };
   return (
     <>
       {eventsList?.map((ev) => {
@@ -98,14 +123,15 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
             </div>
 
             <div className="flex items-center gap-8 py-2 border-gray-300 border-b-[1px]">
-              <div className="flex items-center justify-center">
+              {/* <div className="flex items-center justify-center">
                 <div
                   onClick={() => upvoteEvent(ev.id)}
                   className="text-[1.5rem] cursor-pointer hover:text-red-500">
                   <BiUpvote />
                 </div>
                 <p className="text-[1.1rem]">{evData.EventUpvoteCount}</p>
-              </div>
+              </div> */}
+              {displayUpvote(ev.id, evData)}
 
               {displayToJoinEventMsg(ev.id)}
             </div>
