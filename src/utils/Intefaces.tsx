@@ -14,7 +14,7 @@ export interface AdminDataType extends UserDataType {
 export interface EventParamsType {
   EventDate: Timestamp;
   EventDescription: string;
-  EventOrganizer: string;
+  EventOrganizer: string[2];
   EventParticipantCount: number;
   EventReviews: EventReviewParamsType[];
   EventTitle: string;
