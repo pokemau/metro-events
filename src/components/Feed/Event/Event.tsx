@@ -2,7 +2,7 @@ import AddEventReview from "@/utils/Event/AddEventReview";
 import {
   EventReviewParamsType,
   EventParamsType,
-  UserDataType,
+  NormalUserDataType,
 } from "@/utils/Intefaces";
 import AddUserEventJoined from "@/utils/User/AddUserEventJoined";
 import { User } from "firebase/auth";
@@ -17,7 +17,7 @@ import AddNewUpvotedEvent from "@/utils/User/AddNewUpvotedEvent";
 
 interface EventProps {
   eventsList: DocumentData[];
-  userData: UserDataType;
+  userData: NormalUserDataType;
   user: User;
 }
 
@@ -44,33 +44,27 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
   const joinEvent = (ev: React.MouseEvent<HTMLDivElement>, id: string) => {
     AddUserEventJoined(user.uid, id);
 
-    console.log("click");
-
     const targetDiv = ev.currentTarget;
     if (targetDiv) {
-      const newDiv = document.createElement("div");
-      newDiv.innerHTML = `
-        <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-          <p>Joined Event</p>
-        </div>
-      `;
-
-      targetDiv.replaceWith(newDiv);
+      targetDiv.textContent = "Joined";
     }
   };
 
   const addReviewToEvent = async (eventID: string) => {
     const reviewContent = textAreaRef.current?.value;
-    if (!reviewContent) return;
 
-    const newReview: EventReviewParamsType = {
-      ReviewPoster: user.displayName!,
-      ReviewContent: reviewContent?.toString()!,
-      ReviewDatePosted: Timestamp.now(),
-    };
-    AddEventReview(eventID, newReview);
+    console.log(reviewContent);
 
-    if (textAreaRef.current) textAreaRef.current.value = "";
+    if (user.displayName && reviewContent) {
+      const newReview: EventReviewParamsType = {
+        ReviewPoster: user.displayName,
+        ReviewContent: reviewContent.toString(),
+        ReviewDatePosted: Timestamp.now(),
+      };
+      AddEventReview(eventID, newReview);
+
+      if (textAreaRef.current) textAreaRef.current.value = "";
+    }
   };
 
   const upvoteEvent = (eventID: string) => {

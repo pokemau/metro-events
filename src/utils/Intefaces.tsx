@@ -1,20 +1,25 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface UserDataType {
+export interface NormalUserDataType {
   uid: string;
   eventsJoined: string[];
   UserUpvotedEvents: string[];
   userType: string;
 }
 
-export interface AdminDataType extends UserDataType {
+export interface OrganizerUserDataType extends NormalUserDataType {
+  EventsOrganized: EventParamsType[];
+}
+
+export interface AdminUserDataType extends NormalUserDataType {
+  EventsOrganized: EventParamsType[];
   OrganizerRequests: string[];
 }
 
 export interface EventParamsType {
   EventDate: Timestamp;
   EventDescription: string;
-  EventOrganizer: string[2];
+  EventOrganizer: string[];
   EventParticipantCount: number;
   EventReviews: EventReviewParamsType[];
   EventTitle: string;

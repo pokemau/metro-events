@@ -1,6 +1,6 @@
 import { db } from "@/auth/firebase";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
-import { AdminDataType } from "../Intefaces";
+import { AdminUserDataType } from "../Intefaces";
 
 const AddNewOrganizerRequest = async (
   applicantUID: string,
@@ -11,7 +11,7 @@ const AddNewOrganizerRequest = async (
   try {
     const adminUserRef = doc(db, "users_list", adminUID);
     const docSnap = await getDoc(adminUserRef);
-    const adminReqs = docSnap.data() as AdminDataType;
+    const adminReqs = docSnap.data() as AdminUserDataType;
 
     if (adminReqs.OrganizerRequests.includes(applicantUID)) {
       if (divRef?.current?.innerText) {

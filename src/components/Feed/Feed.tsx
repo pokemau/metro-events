@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import Notifications from "../Notifications/Notifications";
 import GetUserData from "@/utils/User/GetUserdata";
-import { UserDataType } from "@/utils/Intefaces";
+import { NormalUserDataType } from "@/utils/Intefaces";
 import Events from "./Events";
 
 interface FeedProps {
@@ -11,13 +11,13 @@ interface FeedProps {
 }
 
 const Feed: React.FC<FeedProps> = ({ user }) => {
-  const [userData, setUserData] = useState<UserDataType>();
+  const [userData, setUserData] = useState<NormalUserDataType>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await GetUserData(user.uid);
-        if (data) setUserData(data as UserDataType);
+        if (data) setUserData(data as NormalUserDataType);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

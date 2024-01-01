@@ -13,12 +13,12 @@ import { useEffect, useState } from "react";
 
 // ICONS
 import { User } from "firebase/auth";
-import { UserDataType } from "@/utils/Intefaces";
+import { NormalUserDataType } from "@/utils/Intefaces";
 import Event from "./Event/Event";
 
 interface EventsProps {
   user: User;
-  userData: UserDataType | undefined;
+  userData: NormalUserDataType | undefined;
 }
 
 const Events: React.FC<EventsProps> = ({ userData, user }) => {

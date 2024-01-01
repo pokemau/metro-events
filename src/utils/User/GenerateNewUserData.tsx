@@ -1,6 +1,6 @@
 import { db } from "@/auth/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { UserDataType } from "../Intefaces";
+import { NormalUserDataType } from "../Intefaces";
 import { User } from "firebase/auth";
 
 const GenerateNewUserData = async (user: User) => {
@@ -10,7 +10,7 @@ const GenerateNewUserData = async (user: User) => {
   if (!userDocSnap.exists()) {
     const docRef = doc(db, "users_list", user.uid);
     if (user) {
-      const d: UserDataType = {
+      const d: NormalUserDataType = {
         uid: user.uid,
         userType: "user",
         UserUpvotedEvents: [],
