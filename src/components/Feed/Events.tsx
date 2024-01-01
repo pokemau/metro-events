@@ -13,8 +13,8 @@ import { useEffect, useState } from "react";
 
 // ICONS
 import { User } from "firebase/auth";
-import { NormalUserDataType } from "@/utils/Intefaces";
 import Event from "./Event/Event";
+import { NormalUserDataType } from "@/utils/Intefaces";
 
 interface EventsProps {
   user: User;
@@ -42,13 +42,15 @@ const Events: React.FC<EventsProps> = ({ userData, user }) => {
   }, [limitCount]);
 
   return (
-    <div>
+    <>
       {eventsList.length != 0 && userData ? (
-        <Event eventsList={eventsList} userData={userData} user={user} />
+        eventsList.map((ev: DocumentData) => (
+          <Event event={ev} user={user} userData={userData} />
+        ))
       ) : (
-        <p>LOADING</p>
+        <p>Loading</p>
       )}
-    </div>
+    </>
   );
 };
 

@@ -16,13 +16,15 @@ import IncrementUpvoteEventCount from "@/utils/Event/IncrementUpvoteEventCount";
 import AddNewUpvotedEvent from "@/utils/User/AddNewUpvotedEvent";
 
 interface EventProps {
-  eventsList: DocumentData[];
+  event: DocumentData;
+  // eventsList: DocumentData[];
   userData: NormalUserDataType;
   user: User;
 }
 
-const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
+const Event: React.FC<EventProps> = ({ event, userData, user }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const evData: EventParamsType = event.data();
 
   const displayToJoinEventMsg = (eventID: string): React.ReactElement => {
     if (userData.eventsJoined.includes(eventID)) {
@@ -98,59 +100,48 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
     );
   };
   return (
-    <>
-      {eventsList?.map((ev) => {
-        const evData: EventParamsType = ev.data();
-        if (!evData) return null;
+    <div key={event.id} className="bg-[#f5f5f5] rounded-lg w-[80%] my-2 p-4">
+      <div className="flex items-center gap-2 border-gray-300 border-b-[1px] py-1 justify-center">
+        <h1 className="font-bold text-3xl">{evData.EventTitle}</h1>
+      </div>
 
-        return (
-          <div key={ev.id} className="bg-[#f5f5f5] rounded-lg w-[80%] my-2 p-4">
-            <div className="flex items-center gap-2 border-gray-300 border-b-[1px] py-1 justify-center">
-              <h1 className="font-bold text-3xl">{evData.EventTitle}</h1>
-            </div>
+      <div className="my-2">
+        <p className="break-words text-xl mb-4">{evData.EventDescription}</p>
+        <div className="text-gray-600 text-sm mt-4">
+          <p>{`Participants: ${evData.EventParticipantCount}`}</p>
+          <p>{`Organizer: ${evData.EventOrganizer[1]}`}</p>
+          <p>{`Date: ${evData.EventDate.toDate().toLocaleDateString()}`}</p>
+        </div>
+      </div>
 
-            <div className="my-2">
-              <p className="break-words text-xl mb-4">
-                {evData.EventDescription}
-              </p>
-              <div className="text-gray-600 text-sm mt-4">
-                <p>{`Participants: ${evData.EventParticipantCount}`}</p>
-                <p>{`Organizer: ${evData.EventOrganizer[1]}`}</p>
-                <p>{`Date: ${evData.EventDate.toDate().toLocaleDateString()}`}</p>
-              </div>
-            </div>
+      <div className="flex items-center gap-8 py-2 border-gray-300 border-b-[1px]">
+        {displayUpvote(event.id, evData)}
+        {displayToJoinEventMsg(event.id)}
+      </div>
 
-            <div className="flex items-center gap-8 py-2 border-gray-300 border-b-[1px]">
-              {displayUpvote(ev.id, evData)}
-              {displayToJoinEventMsg(ev.id)}
-            </div>
+      <div className="py-2">
+        <div className="flex flex-col gap-2">
+          <textarea
+            ref={textAreaRef}
+            maxLength={400}
+            className="w-full focus:outline-none p-2 text-lg"></textarea>
+          <button
+            onClick={() => addReviewToEvent(event.id)}
+            className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+            Add Review
+          </button>
+        </div>
+      </div>
 
-            <div className="py-2">
-              <div className="flex flex-col gap-2">
-                <textarea
-                  ref={textAreaRef}
-                  maxLength={400}
-                  className="w-full focus:outline-none p-2 text-lg"></textarea>
-                <button
-                  onClick={() => addReviewToEvent(ev.id)}
-                  className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-                  Add Review
-                </button>
-              </div>
-            </div>
-
-            <div className="max-h-[20rem] overflow-auto">
-              {evData.EventReviews.sort(
-                (a, b) =>
-                  b.ReviewDatePosted.toMillis() - a.ReviewDatePosted.toMillis()
-              ).map((review: EventReviewParamsType) => (
-                <EventReview EventReview={review} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
-    </>
+      <div className="max-h-[20rem] overflow-auto" key={event.id}>
+        {evData.EventReviews.sort(
+          (a, b) =>
+            b.ReviewDatePosted.toMillis() - a.ReviewDatePosted.toMillis()
+        ).map((review: EventReviewParamsType) => (
+          <EventReview EventReview={review} />
+        ))}
+      </div>
+    </div>
   );
 };
 
