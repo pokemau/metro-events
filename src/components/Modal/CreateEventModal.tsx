@@ -24,7 +24,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const createEvent = () => {
+  const createEvent = async () => {
     const eventTitle = inputRef.current?.value;
     const eventDescription = textareaRef.current?.value;
 
@@ -35,15 +35,17 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       const newEvent: EventParamsType = {
         EventDate: Timestamp.fromDate(startDate),
         EventDescription: eventDescription,
-        EventOrganizer: [userData.uid.toString(), user.displayName],
+        EventOrganizer: [userData.UserUID.toString(), user.displayName],
         EventParticipantCount: 0,
         EventReviews: [],
         EventTitle: eventTitle,
         EventUpvoteCount: 0,
+        EventParticipants: [],
       };
 
-      AddNewOrganizedEvent(userData.uid, newEvent);
-      AddNewEvent(newEvent);
+      // AddNewOrganizedEvent(userData.UserUID, newEvent);
+      const newEventID = await AddNewEvent(newEvent);
+      AddNewOrganizedEvent(userData.UserUID, newEventID.id);
 
       handleClick();
     }
@@ -55,7 +57,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
 
   return (
     <div className="bg-gray-600 bg-opacity-75 w-[100vw] h-[100vh] fixed top-0 left-0">
-      <div className="bg-[#f5f5f5] w-[40rem] mx-auto my-4 p-2 rounded-md">
+      <div className="bg-[#f5f5f5] w-[40rem] mx-auto my-4 p-4 rounded-md">
         <div className="mb-5">
           <div>
             <h1 className="text-2xl font-bold">Event Title: </h1>

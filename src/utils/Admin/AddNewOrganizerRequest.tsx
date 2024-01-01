@@ -1,33 +1,31 @@
 import { db } from "@/auth/firebase";
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
-import { AdminUserDataType } from "../Intefaces";
+import { AdminUserDataType, OrganizerRequest } from "../Intefaces";
 
+export const ADMIN_UID = "bMIAAxoHAQYB5W28RojSpac6iRJ2";
 const AddNewOrganizerRequest = async (
-  applicantUID: string,
+  applicantDetails: OrganizerRequest,
   divRef: React.RefObject<HTMLDivElement>
 ) => {
-  const adminUID = "bMIAAxoHAQYB5W28RojSpac6iRJ2";
+  const adminUserRef = doc(db, "users_list", ADMIN_UID);
+  const docSnap = await getDoc(adminUserRef);
+  const adminReqs = docSnap.data() as AdminUserDataType;
 
-  try {
-    const adminUserRef = doc(db, "users_list", adminUID);
-    const docSnap = await getDoc(adminUserRef);
-    const adminReqs = docSnap.data() as AdminUserDataType;
+  const hasReq = adminReqs.OrganizerRequests.some((el) => {
+    if (el.requesterUID === applicantDetails.requesterUID) return true;
+    return false;
+  });
 
-    if (adminReqs.OrganizerRequests.includes(applicantUID)) {
-      if (divRef?.current?.innerText) {
-        divRef.current.innerText = "Already Requested!";
-      }
-      return;
+  if (hasReq) {
+    if (divRef?.current?.innerText) {
+      divRef.current.innerText = "Already Requested!";
     }
-
-    await updateDoc(adminUserRef, {
-      OrganizerRequests: arrayUnion(applicantUID),
-    });
-
-    console.log("ADDED REQUEST");
-  } catch {
-    console.log("FAILED TO ADD REQUEST");
+    return;
   }
+
+  await updateDoc(adminUserRef, {
+    OrganizerRequests: arrayUnion(applicantDetails),
+  });
 };
 
 export default AddNewOrganizerRequest;

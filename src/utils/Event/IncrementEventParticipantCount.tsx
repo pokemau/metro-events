@@ -1,11 +1,15 @@
 import { db } from "@/auth/firebase";
-import { doc, increment, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, increment, updateDoc } from "firebase/firestore";
 
-const IncrementEventParticipantCount = async (eventID: string) => {
+const IncrementEventParticipantCount = async (
+  eventID: string,
+  userID: string
+) => {
   const eventDocRef = doc(db, "events", eventID);
 
   await updateDoc(eventDocRef, {
     EventParticipantCount: increment(1),
+    EventParticipants: arrayUnion(userID),
   });
 };
 

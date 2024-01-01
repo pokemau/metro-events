@@ -11,10 +11,11 @@ const GenerateNewUserData = async (user: User) => {
     const docRef = doc(db, "users_list", user.uid);
     if (user) {
       const d: NormalUserDataType = {
-        uid: user.uid,
-        userType: "user",
+        UserUID: user.uid,
+        UserType: "user",
         UserUpvotedEvents: [],
-        eventsJoined: [],
+        UserEventsJoined: [],
+        UserNotifications: [],
       };
       await setDoc(docRef, d);
     }

@@ -2,14 +2,11 @@ import { db } from "@/auth/firebase";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { EventParamsType } from "../Intefaces";
 
-const AddNewOrganizedEvent = async (
-  userID: string,
-  newEvent: EventParamsType
-) => {
+const AddNewOrganizedEvent = async (userID: string, newEventID: string) => {
   const userRef = doc(db, "users_list", userID);
 
   await updateDoc(userRef, {
-    EventsOrganized: arrayUnion(newEvent),
+    EventsOrganized: arrayUnion(newEventID),
   });
 };
 

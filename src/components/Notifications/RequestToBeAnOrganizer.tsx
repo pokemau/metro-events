@@ -1,4 +1,5 @@
 import AddNewOrganizerRequest from "@/utils/Admin/AddNewOrganizerRequest";
+import { OrganizerRequest } from "@/utils/Intefaces";
 import { User } from "firebase/auth";
 import { useRef } from "react";
 
@@ -8,8 +9,15 @@ interface RequestToBeAnOrganizer {
 const RequestToBeAnOrganizer: React.FC<RequestToBeAnOrganizer> = ({ user }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const requestToBeAnOrganizer = () => {
-    AddNewOrganizerRequest(user.uid, divRef);
+    if (user.displayName && user.uid) {
+      const applicantDetails: OrganizerRequest = {
+        requesterName: user.displayName,
+        requesterUID: user.uid,
+      };
+      AddNewOrganizerRequest(applicantDetails, divRef);
+    }
   };
+
   return (
     <div
       ref={divRef}

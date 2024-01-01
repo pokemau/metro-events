@@ -12,11 +12,11 @@ const AddUserEventJoined = async (userID: string, eventID: string) => {
       const userData = userDocSnap.data() as NormalUserDataType;
 
       //////////// FIX THIS SHIT
-      if (!userData.eventsJoined.includes(eventID)) {
+      if (!userData.UserEventsJoined.includes(eventID)) {
         await updateDoc(userDocRef, {
-          eventsJoined: [...userData.eventsJoined, eventID],
+          UserEventsJoined: [...userData.UserEventsJoined, eventID],
         });
-        IncrementEventParticipantCount(eventID);
+        IncrementEventParticipantCount(eventID, userID);
         return true;
       }
     }

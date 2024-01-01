@@ -3,6 +3,8 @@ import {
   EventReviewParamsType,
   EventParamsType,
   NormalUserDataType,
+  AdminUserDataType,
+  OrganizerUserDataType,
 } from "@/utils/Intefaces";
 import AddUserEventJoined from "@/utils/User/AddUserEventJoined";
 import { User } from "firebase/auth";
@@ -14,11 +16,11 @@ import { BiSolidUpvote } from "react-icons/bi";
 import EventReview from "./EventReview";
 import IncrementUpvoteEventCount from "@/utils/Event/IncrementUpvoteEventCount";
 import AddNewUpvotedEvent from "@/utils/User/AddNewUpvotedEvent";
+import { CancelEvent } from "@/utils/Event/CancelEvent";
 
 interface EventProps {
   event: DocumentData;
-  // eventsList: DocumentData[];
-  userData: NormalUserDataType;
+  userData: NormalUserDataType | AdminUserDataType | OrganizerUserDataType;
   user: User;
 }
 
@@ -27,7 +29,9 @@ const Event: React.FC<EventProps> = ({ event, userData, user }) => {
   const evData: EventParamsType = event.data();
 
   const displayToJoinEventMsg = (eventID: string): React.ReactElement => {
-    if (userData.eventsJoined.includes(eventID)) {
+    if (!userData) return <></>;
+
+    if (userData.UserEventsJoined?.includes(eventID)) {
       return (
         <div className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
           <p>Joined</p>
@@ -43,12 +47,14 @@ const Event: React.FC<EventProps> = ({ event, userData, user }) => {
     );
   };
 
-  const joinEvent = (ev: React.MouseEvent<HTMLDivElement>, id: string) => {
-    AddUserEventJoined(user.uid, id);
+  const joinEvent = (ev: React.MouseEvent<HTMLDivElement>, eventID: string) => {
+    if (!userData.UserEventsJoined.includes(eventID)) {
+      AddUserEventJoined(user.uid, eventID);
 
-    const targetDiv = ev.currentTarget;
-    if (targetDiv) {
-      targetDiv.textContent = "Joined";
+      const targetDiv = ev.currentTarget;
+      if (targetDiv) {
+        targetDiv.textContent = "Joined";
+      }
     }
   };
 
@@ -99,6 +105,24 @@ const Event: React.FC<EventProps> = ({ event, userData, user }) => {
       </div>
     );
   };
+  const handleCancelEvent = (targetEventID: string) => {
+    CancelEvent(targetEventID, userData.UserUID);
+  };
+
+  const displayToCancelEvent = (eventID: string) => {
+    if (userData.UserType == "user") return <></>;
+
+    if ((userData as AdminUserDataType).EventsOrganized?.includes(eventID)) {
+      return (
+        <div
+          onClick={() => handleCancelEvent(eventID)}
+          className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+          <button>Cancel Event</button>
+        </div>
+      );
+    }
+  };
+
   return (
     <div key={event.id} className="bg-[#f5f5f5] rounded-lg w-[80%] my-2 p-4">
       <div className="flex items-center gap-2 border-gray-300 border-b-[1px] py-1 justify-center">
@@ -116,7 +140,10 @@ const Event: React.FC<EventProps> = ({ event, userData, user }) => {
 
       <div className="flex items-center gap-8 py-2 border-gray-300 border-b-[1px]">
         {displayUpvote(event.id, evData)}
-        {displayToJoinEventMsg(event.id)}
+        <div className="flex gap-2">
+          {displayToJoinEventMsg(event.id)}
+          {displayToCancelEvent(event.id)}
+        </div>
       </div>
 
       <div className="py-2">
@@ -133,7 +160,7 @@ const Event: React.FC<EventProps> = ({ event, userData, user }) => {
         </div>
       </div>
 
-      <div className="max-h-[20rem] overflow-auto" key={event.id}>
+      <div className="max-h-[20rem] overflow-auto">
         {evData.EventReviews.sort(
           (a, b) =>
             b.ReviewDatePosted.toMillis() - a.ReviewDatePosted.toMillis()

@@ -29,7 +29,11 @@ const Feed: React.FC<FeedProps> = ({ user }) => {
   return (
     <div className="flex">
       <div className="w-[30%]">
-        <Notifications user={user} userData={userData!} />
+        {userData && user ? (
+          <Notifications user={user} userData={userData} />
+        ) : (
+          <p>LOADING</p>
+        )}
       </div>
       <div className="w-[70%]">
         <Events user={user} userData={userData} />

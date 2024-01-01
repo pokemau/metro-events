@@ -5,8 +5,7 @@ import { EventParamsType } from "../Intefaces";
 const AddNewEvent = async (newEvent: EventParamsType) => {
   const eventsRef = collection(db, "events");
 
-  const t = await addDoc(eventsRef, newEvent);
-  console.log("Document added with ID: ", t.id);
+  return await addDoc(eventsRef, newEvent);
 };
 
 export default AddNewEvent;
