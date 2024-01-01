@@ -119,20 +119,15 @@ const Event: React.FC<EventProps> = ({ eventsList, userData, user }) => {
               <p className="break-words text-xl mb-4">
                 {evData.EventDescription}
               </p>
-              <p>{`Participants: ${evData.EventParticipantCount}`}</p>
+              <div className="text-gray-600 text-sm mt-4">
+                <p>{`Participants: ${evData.EventParticipantCount}`}</p>
+                <p>{`Organizer: ${evData.EventOrganizer[1]}`}</p>
+                <p>{`Date: ${evData.EventDate.toDate().toLocaleDateString()}`}</p>
+              </div>
             </div>
 
             <div className="flex items-center gap-8 py-2 border-gray-300 border-b-[1px]">
-              {/* <div className="flex items-center justify-center">
-                <div
-                  onClick={() => upvoteEvent(ev.id)}
-                  className="text-[1.5rem] cursor-pointer hover:text-red-500">
-                  <BiUpvote />
-                </div>
-                <p className="text-[1.1rem]">{evData.EventUpvoteCount}</p>
-              </div> */}
               {displayUpvote(ev.id, evData)}
-
               {displayToJoinEventMsg(ev.id)}
             </div>
 
