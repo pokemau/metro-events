@@ -48,20 +48,22 @@ const Notifications: React.FC<NotificationsProps> = ({ user, userData }) => {
     return (userData as AdminUserDataType).OrganizerRequests.map((req) => (
       <div key={req.requesterUID}>
         <p>{req.requesterName} wants to be an organizer!</p>
-        <div
-          onClick={() =>
-            handleAcceptOrganizerReq(req.requesterUID, req.requesterName)
-          }
-          className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-          <button>Accept</button>
-        </div>
+        <div className="flex gap-1 items-center justify-center">
+          <div
+            onClick={() =>
+              handleAcceptOrganizerReq(req.requesterUID, req.requesterName)
+            }
+            className="w-full bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+            <button>Accept</button>
+          </div>
 
-        <div
-          onClick={() =>
-            handleDeclineOrganizerReq(req.requesterUID, req.requesterName)
-          }
-          className="bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
-          <button>Decline</button>
+          <div
+            onClick={() =>
+              handleDeclineOrganizerReq(req.requesterUID, req.requesterName)
+            }
+            className="w-full bg-red-400 hover:bg-red-500 p-1 rounded-md cursor-pointer transition-all">
+            <button>Decline</button>
+          </div>
         </div>
       </div>
     ));
@@ -75,7 +77,7 @@ const Notifications: React.FC<NotificationsProps> = ({ user, userData }) => {
     if (!userData) return;
 
     return userData.UserNotifications?.map((notif) => (
-      <div key={notif}>
+      <div key={notif} className="w-full">
         <p>{notif}</p>
         <div
           onClick={() => handleDeleteNotif(notif)}
@@ -88,17 +90,17 @@ const Notifications: React.FC<NotificationsProps> = ({ user, userData }) => {
 
   return (
     <div className="w-[30%] h-[100vh] p-2 fixed">
-      <div className="bg-[#f5f5f5] w-full h-full rounded-md p-2 flex flex-col justify-between items-center">
+      <div className="bg-[#f5f5f5] w-full h-full rounded-md p-2 flex flex-col items-center">
         <div className="w-full h-[2.5rem] flex items-center justify-center text-2xl font-bold border-b-[1px] border-gray-300 ">
           <h1>Notifications</h1>
         </div>
 
-        <div>
+        <div className="w-full">
           {showOrganizerRequests()}
           {showEventNotifications()}
         </div>
 
-        <div className="w-full flex flex-col gap-1 text-center">
+        <div className="mt-auto w-full flex flex-col gap-1 text-center">
           {userData?.UserType == "user" ? (
             <RequestToBeAnOrganizer user={user} />
           ) : (
